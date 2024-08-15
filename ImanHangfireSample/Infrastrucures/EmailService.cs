@@ -1,4 +1,5 @@
-﻿using ImanHangfireSample.Hubs;
+﻿using ImanHangfireSample.Filters;
+using ImanHangfireSample.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using SampleHangfire.Data;
 
@@ -11,6 +12,8 @@ namespace SampleHangfire.Infrastrucures
         void SendNewProducts();
         void SendNews();
         void SendEmail(Guid sendEmailId);
+        [LogJob]
+        void TestLog();
     }
 
     public class EmailService: IEmailService
@@ -26,7 +29,13 @@ namespace SampleHangfire.Infrastrucures
             _context = context;
             _hubContext = hubContext;
         }
-
+        [LogJob]
+        public void TestLog()
+        {
+            _logger.LogInformation($"------------------------------- Test Log ------------------------------");
+            throw new Exception("Error");
+        }
+        
         public void SendWellcome(string Email)
         {
             Thread.Sleep(10000);

@@ -18,8 +18,9 @@ namespace SampleHangfire.Controllers
 
         public IActionResult Index()
         {
-            BackgroundJob.Enqueue<SmsService>(p=>p.SendWellcome("09120000000"));
-            _backgroundJobClient.Enqueue<IEmailService>(p => p.SendWellcome("iman@gmail.com"));
+            _backgroundJobClient.Enqueue<IEmailService>(p => p.TestLog());
+            //BackgroundJob.Enqueue<SmsService>(p=>p.SendWellcome("09120000000"));
+            //_backgroundJobClient.Enqueue<IEmailService>(p => p.SendWellcome("iman@gmail.com"));
             //var jobId = BackgroundJob.Enqueue<SmsService>(p => p.TestJobError());
             return View();
         }

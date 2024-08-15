@@ -10,5 +10,6 @@ namespace SampleHangfire.Data
             : base(options)
         {
         }
+        public DbSet<SendMail> SendMails { get; set; }
     }
 }

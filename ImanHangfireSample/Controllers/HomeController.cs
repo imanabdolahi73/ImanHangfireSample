@@ -9,21 +9,26 @@ namespace SampleHangfire.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        public HomeController(ILogger<HomeController> logger, IBackgroundJobClient backgroundJobClient)
         {
             _logger = logger;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         public IActionResult Index()
         {
+            BackgroundJob.Enqueue<SmsService>(p=>p.SendWellcome("09120000000"));
+            _backgroundJobClient.Enqueue<IEmailService>(p => p.SendWellcome("iman@gmail.com"));
+            //var jobId = BackgroundJob.Enqueue<SmsService>(p => p.TestJobError());
             return View();
         }
 
         public IActionResult Continuation()
         {
-            var jobId = BackgroundJob.Enqueue<DatabaseBackupService>(p => p.Backup());
-            BackgroundJob.ContinueJobWith<DatabaseBackupService>(jobId, p => p.ArchiveBackup());
+            var jobId = _backgroundJobClient.Enqueue<DatabaseBackupService>(p => p.Backup());
+            _backgroundJobClient.ContinueJobWith<DatabaseBackupService>(jobId, p => p.ArchiveBackup() , JobContinuationOptions.OnlyOnSucceededState);
+            _backgroundJobClient.ContinueJobWith<ErrorHandlingService>(jobId, p => p.HandleErrorIfFailed(jobId));
 
             return RedirectToAction(nameof(HomeController.Index), "home");
         }
@@ -51,5 +56,7 @@ namespace SampleHangfire.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        
     }
 }

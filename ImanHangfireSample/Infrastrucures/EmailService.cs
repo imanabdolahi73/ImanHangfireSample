@@ -1,11 +1,24 @@
-﻿namespace SampleHangfire.Infrastrucures
+﻿using SampleHangfire.Data;
+
+namespace SampleHangfire.Infrastrucures
 {
-    public class EmailService
+    public interface IEmailService
+    {
+        void SendWellcome(string Email);
+        void SendDiscount(string Email);
+        void SendNewProducts();
+        void SendNews();
+        void SendEmail(Guid sendEmailId);
+    }
+
+    public class EmailService: IEmailService
     {
         private readonly ILogger<SmsService> _logger;
-        public EmailService(ILogger<SmsService> logger)
+        private readonly ApplicationDbContext _context;
+        public EmailService(ILogger<SmsService> logger , ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public void SendWellcome(string Email)
@@ -27,6 +40,21 @@
         {
             Thread.Sleep(2000);
             _logger.LogInformation($"News was sent ...");
+        }
+
+        public void SendEmail(Guid sendEmailId)
+        {
+            var sendMail = _context.SendMails.Find(sendEmailId);
+            ArgumentNullException.ThrowIfNull(sendMail);
+
+            //
+            for (int i = 1; i < 100; i++)
+            {
+                Thread.Sleep(100);
+            }
+            sendMail.SendMailStatus = Entities.SendMailStatus.Done;
+            sendMail.EndDateTime = DateTime.Now;
+            _context.SaveChanges();
         }
     }
 }

@@ -12,12 +12,12 @@ namespace SampleHangfire.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly SmsService _smsService;
-        private readonly EmailService _emailService;
+        private readonly IEmailService _emailService;
         private readonly RoleManager<IdentityRole> _roleManager;
         public AccountController(
             UserManager<User> userManager, 
             SignInManager<User> signInManager,
-            EmailService emailService,
+            IEmailService emailService,
             SmsService smsService,
             RoleManager<IdentityRole> roleManager)
         {
@@ -64,14 +64,14 @@ namespace SampleHangfire.Controllers
 
             //Fire and Forget Job
             //enject in hangfire
-            BackgroundJob.Enqueue<EmailService>(p => p.SendWellcome(model.Email));
+            BackgroundJob.Enqueue<IEmailService>(p => p.SendWellcome(model.Email));
 
             //Fire and Forget Job
             //inject in controller
             BackgroundJob.Enqueue(() => _smsService.SendWellcome(model.PhoneNumber));
 
             //Delayed Job
-            BackgroundJob.Schedule<EmailService>(p => p.SendDiscount(model.Email), TimeSpan.FromSeconds(10));
+            BackgroundJob.Schedule<IEmailService>(p => p.SendDiscount(model.Email), TimeSpan.FromSeconds(10));
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
@@ -102,7 +102,7 @@ namespace SampleHangfire.Controllers
             }
 
             //enject in hangfire
-            BackgroundJob.Enqueue<EmailService>(p => p.SendWellcome(model.UserName));
+            BackgroundJob.Enqueue<IEmailService>(p => p.SendWellcome(model.UserName));
             //inject in controller
             BackgroundJob.Enqueue(() => _emailService.SendWellcome(model.UserName));
 

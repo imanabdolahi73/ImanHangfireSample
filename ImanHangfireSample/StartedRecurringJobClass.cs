@@ -8,7 +8,7 @@ namespace SampleHangfire
         [Obsolete]
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            RecurringJob.AddOrUpdate<EmailService>("RecurringJob_With_IHostedService", p => p.SendNewProducts(),Cron.Minutely());
+            RecurringJob.AddOrUpdate<IEmailService>("RecurringJob_With_IHostedService", p => p.SendNewProducts(),Cron.Minutely());
             return Task.CompletedTask;
         }
 

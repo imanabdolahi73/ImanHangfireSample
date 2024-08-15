@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImanHangfireSample", "ImanHangfireSample\ImanHangfireSample.csproj", "{205E9E9F-AF39-4209-B305-72735D14FAAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{8EA884E9-8AE6-4D22-BB1C-25B945F8CC6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{205E9E9F-AF39-4209-B305-72735D14FAAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{205E9E9F-AF39-4209-B305-72735D14FAAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{205E9E9F-AF39-4209-B305-72735D14FAAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EA884E9-8AE6-4D22-BB1C-25B945F8CC6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EA884E9-8AE6-4D22-BB1C-25B945F8CC6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EA884E9-8AE6-4D22-BB1C-25B945F8CC6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EA884E9-8AE6-4D22-BB1C-25B945F8CC6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

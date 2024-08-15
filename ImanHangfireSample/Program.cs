@@ -7,6 +7,7 @@ using SampleHangfire.Entities;
 using SampleHangfire.Infrastrucures;
 using SampleHangfire;
 using Hangfire.Dashboard;
+using ImanHangfireSample.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHostedService<StartedRecurringJobClass>();
@@ -32,7 +33,7 @@ builder.Services.AddHangfireServer(options =>
 {
     options.SchedulePollingInterval = TimeSpan.FromSeconds(1);
     options.Queues = new string[] { "default" , "send-sms" };
-    options.WorkerCount = 1; //Default ==> Environment.ProcessorCount * 5
+    //options.WorkerCount = 1; //Default ==> Environment.ProcessorCount * 5
 });
 
 builder.Services.AddSingleton<SmsService>();
@@ -49,6 +50,8 @@ GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute
     DelaysInSeconds = new[] { 10, 20, 30 }
 });
 
+
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 app.Lifetime.ApplicationStarted.Register(StartRecurringJobs);
@@ -72,6 +75,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+app.MapHub<EmailTrackingHub>("/TrackingHub");
 
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {

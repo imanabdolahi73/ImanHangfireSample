@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Progress
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Subject)
@@ -34,32 +34,64 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Body)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SendMailStatus)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.SendMailStatus == SampleHangfire.Entities.SendMailStatus.Sending)
+                    {
+                        <div class="progress">
+                            <div style="background-color:green;" id="theprogressbar-@item.Id" data-id="@item.Id" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    }
+                    else
+                    {
+                        <b>Finished</b>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Body)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SendMailStatus)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Detail", "Detail", new { item.Id}) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+
+
+@section Scripts
+    {
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/Tracking.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            console.log("ready!");
+            setTimeout(function () {
+                var progresses = document.getElementsByClassName("progress-bar");
+                for(var i =0; i<progresses.length; ++i) {
+                    var item = progresses[i];
+                    var id = $(item).attr("data-id");
+                    connectToGroup(id);
+                }
+            }, 1000);
+        });
+    </script>
+    }

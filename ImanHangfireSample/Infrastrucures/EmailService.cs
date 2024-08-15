@@ -1,4 +1,6 @@
-﻿using SampleHangfire.Data;
+﻿using ImanHangfireSample.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using SampleHangfire.Data;
 
 namespace SampleHangfire.Infrastrucures
 {
@@ -15,10 +17,14 @@ namespace SampleHangfire.Infrastrucures
     {
         private readonly ILogger<SmsService> _logger;
         private readonly ApplicationDbContext _context;
-        public EmailService(ILogger<SmsService> logger , ApplicationDbContext context)
+        private readonly IHubContext<EmailTrackingHub> _hubContext;
+        public EmailService(ILogger<SmsService> logger ,
+            ApplicationDbContext context,
+            IHubContext<EmailTrackingHub> hubContext)
         {
             _logger = logger;
             _context = context;
+            _hubContext = hubContext;
         }
 
         public void SendWellcome(string Email)
@@ -47,14 +53,20 @@ namespace SampleHangfire.Infrastrucures
             var sendMail = _context.SendMails.Find(sendEmailId);
             ArgumentNullException.ThrowIfNull(sendMail);
 
+            double usersCount = 200;
             //
-            for (int i = 1; i < 100; i++)
+            for (int i = 1; i <= usersCount; i++)
             {
-                Thread.Sleep(100);
+                double percent = ((i / usersCount) * 100);
+                Thread.Sleep(500);
+                _hubContext.Clients.Group(EmailTrackingHub.GetGroupName(sendEmailId))
+                    .SendAsync("ShowStatus", (int)percent,sendEmailId,Faker.User.Email());
             }
             sendMail.SendMailStatus = Entities.SendMailStatus.Done;
             sendMail.EndDateTime = DateTime.Now;
             _context.SaveChanges();
+
+            
         }
     }
 }

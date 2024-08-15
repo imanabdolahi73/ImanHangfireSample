@@ -26,7 +26,7 @@ namespace ImanHangfireSample.Controllers
             return View(emails);
         }
 
-        public IActionResult Detail(Guid Id)
+        public IActionResult Detail([FromRoute]Guid Id)
         {
             var email = _context.SendMails.Find(Id);
             ArgumentNullException.ThrowIfNull(email);
